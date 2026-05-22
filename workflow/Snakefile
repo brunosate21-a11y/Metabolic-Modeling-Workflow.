@@ -1,5 +1,6 @@
 configfile: "config/config.yaml"
 
+include: "rules/checkm.smk"
 include: "rules/carveme.smk"
 include: "rules/memote.smk"
 include: "rules/micom.smk"
@@ -24,7 +25,13 @@ rule all:
         expand("results/memote/{mag}/report.html", mag=MAGS),
         expand("results/memote/{mag}/score.json", mag=MAGS),
         "results/memote/memote_summary.tsv",
+        "results/memote/memote_quality.tsv",
+        "results/memote/filtered_models.txt",
         "results/micom/exchange_fluxes.tsv",
         "results/smetana/global.tsv",
         "results/smetana/detailed.tsv",
-        "results/steadycom/abundances.tsv"
+        "results/steadycom/abundances.tsv",
+        # Uncomment when .fna files are available:
+        # expand("results/checkm/{mag}/quality.tsv", mag=MAGS),
+        # "results/checkm/checkm_summary.tsv",
+        # "results/checkm/filtered_mags.txt",
