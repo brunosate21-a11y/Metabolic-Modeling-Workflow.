@@ -3,5 +3,5 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - micom =0.35.0
+  - memote =0.16.1
   - python =3.10
