@@ -23,3 +23,17 @@ rule memote_summary:
         "logs/memote/memote_summary.log"
     script:
         "../scripts/memote_summary.py"
+
+
+rule filter_memote:
+    input:
+        scores = expand("results/memote/{mag}/score.json", mag=MAGS)
+    output:
+        quality  = "results/memote/memote_quality.tsv",
+        filtered = "results/memote/filtered_models.txt"
+    params:
+        min_total_score = config["quality_filters"]["memote"]["min_total_score"]
+    log:
+        "logs/memote/filter_memote.log"
+    script:
+        "../scripts/filter_memote.py"
