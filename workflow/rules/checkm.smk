@@ -8,6 +8,23 @@ rule checkm:
     log:
         "logs/checkm/{mag}.log"
     conda:
-        "workflow/envs/checkm.yaml"
+        "../envs/checkm.yaml"
     script:
-        "workflow/scripts/checkm.py"
+        "../scripts/checkm.py"
+
+
+MAGS = config["MAGS"]
+
+rule filter_checkm:
+    input:
+        quality = expand("results/checkm/{mag}/quality.tsv", mag=MAGS)
+    output:
+        summary  = "results/checkm/checkm_summary.tsv",
+        filtered = "results/checkm/filtered_mags.txt"
+    params:
+        min_completeness  = config["quality_filters"]["checkm"]["min_completeness"],
+        max_contamination = config["quality_filters"]["checkm"]["max_contamination"]
+    log:
+        "logs/checkm/filter_checkm.log"
+    script:
+        "../scripts/filter_checkm.py"
