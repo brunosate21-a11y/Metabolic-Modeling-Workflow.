@@ -7,8 +7,19 @@ rule memote:
     log:
         "logs/memote/{mag}.log"
     conda:
-        "workflow/envs/memote.yaml"
+        "../envs/memote.yaml"
     script:
-        "workflow/scripts/memote.py"
+        "../scripts/memote.py"
 
 
+MAGS = config["MAGS"]
+
+rule memote_summary:
+    input:
+        scores = expand("results/memote/{mag}/score.json", mag=MAGS)
+    output:
+        summary = "results/memote/memote_summary.tsv"
+    log:
+        "logs/memote/memote_summary.log"
+    script:
+        "../scripts/memote_summary.py"
