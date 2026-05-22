@@ -1,6 +1,7 @@
 configfile: "config/config.yaml"
 
 include: "rules/carveme.smk"
+include: "rules/memote.smk"
 include: "rules/micom.smk"
 include: "rules/smetana.smk"
 include: "rules/steadycom.smk"
@@ -20,6 +21,9 @@ rule all:
     default_target: True
     input:
         expand("results/gems/{mag}.xml", mag=MAGS),
+        expand("results/memote/{mag}/report.html", mag=MAGS),
+        expand("results/memote/{mag}/score.json", mag=MAGS),
+        "results/memote/memote_summary.tsv",
         "results/micom/exchange_fluxes.tsv",
         "results/smetana/global.tsv",
         "results/smetana/detailed.tsv",
