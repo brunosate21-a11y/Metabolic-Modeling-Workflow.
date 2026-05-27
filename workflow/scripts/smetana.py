@@ -17,7 +17,7 @@ if isinstance(models, str):
 else:
     models_str = " ".join(models)
 
-smetana_path = str(Path(sys.executable).parent / "Scripts" / "smetana")
+smetana_path = str(Path(sys.executable).parent / "smetana")
 
 log_str = snakemake.log_fmt_shell(stdout=True, stderr=True)
 log_append_str = log_str.replace(">", ">>", 1) if ">" in log_str else log_str

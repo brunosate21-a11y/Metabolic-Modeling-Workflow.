@@ -10,5 +10,4 @@ score = snakemake.output.score
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 shell("memote report snapshot " "--filename {report} " "{model} " "{log}")
-
-shell("memote run " "--json {score} " "{model} " "{log}")
+shell("memote run " "--ignore-git " "--filename {score} " "{model} " "{log}")
