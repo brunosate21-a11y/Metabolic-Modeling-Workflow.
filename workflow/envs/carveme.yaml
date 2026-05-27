@@ -3,7 +3,9 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
+  - python=3.10
   - carveme=1.6.1
+  - reframed=1.5.1
+  - pandas<2.0
   - diamond
   - glpk
-  
