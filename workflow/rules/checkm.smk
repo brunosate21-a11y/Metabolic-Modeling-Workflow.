@@ -13,7 +13,6 @@ rule checkm:
         "../scripts/checkm.py"
 
 
-MAGS = config["MAGS"]
 
 rule filter_checkm:
     input:

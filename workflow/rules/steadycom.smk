@@ -1,4 +1,4 @@
-MAGS = config["MAGS"]
+
 rule steadycom:
     input:
         models     = expand("results/gems/{mag}.xml", mag=MAGS)

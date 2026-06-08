@@ -12,7 +12,7 @@ rule memote:
         "../scripts/memote.py"
 
 
-MAGS = config["MAGS"]
+
 
 rule memote_summary:
     input:

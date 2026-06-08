@@ -1,4 +1,4 @@
-MAGS = config["MAGS"]
+
 rule micom:
     input:
         models          = expand("results/gems/{mag}.xml", mag=MAGS)

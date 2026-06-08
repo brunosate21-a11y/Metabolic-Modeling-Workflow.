@@ -9,6 +9,7 @@ include: "rules/steadycom.smk"
 
 onstart:
     print("\n--- Analysis started ---\n")
+    print(f"--- MAGs detected: {len(MAGS)} -> {MAGS} ---\n")
 
 onsuccess:
     print("\n--- Workflow finished! ---\n")
@@ -16,7 +17,21 @@ onsuccess:
 onerror:
     print("\n--- An error occurred! ---\n")
 
-MAGS = config["MAGS"]
+
+MAGS_DIR = config.get("mags_dir", "data/mags")
+
+
+if config.get("MAGS"):
+    MAGS = config["MAGS"]
+else:
+    MAGS, = glob_wildcards(f"{MAGS_DIR}/{{mag}}.faa")
+
+
+if not MAGS:
+    raise ValueError(
+        f"Nenhum ficheiro .faa encontrado em '{MAGS_DIR}'. "
+        "Coloca os MAGs lá ou define 'MAGS:' no config.yaml."
+    )
 
 rule all:
     default_target: True
@@ -31,7 +46,3 @@ rule all:
         "results/smetana/global.tsv",
         "results/smetana/detailed.tsv",
         "results/steadycom/abundances.tsv",
-        # Uncomment when .fna files are available:
-        # expand("results/checkm/{mag}/quality.tsv", mag=MAGS),
-        # "results/checkm/checkm_summary.tsv",
-        # "results/checkm/filtered_mags.txt",

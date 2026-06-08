@@ -1,4 +1,4 @@
-MAGS = config["MAGS"]
+
 rule smetana:
     input:
         models = expand("results/gems/{mag}.xml", mag=MAGS)
