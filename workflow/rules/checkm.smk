@@ -1,6 +1,6 @@
 rule checkm:
     input:
-        genome = "data/mags/{mag}.fna"
+        genome = "data/mags/{mag}.faa"
     output:
         output_dir = directory("results/checkm/{mag}"),
         quality    = "results/checkm/{mag}/quality.tsv"
