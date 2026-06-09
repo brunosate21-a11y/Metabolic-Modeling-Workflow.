@@ -3,7 +3,7 @@ $genomes = @{
     "Ecoli_K12"                         = "GCF_000005845.2"
     "Pputida_NBRC14164"                 = "GCF_000412675.1"
     "Bsubtilis_168"                     = "GCF_000009045.1"   
-    "Streptococcus_TIGR4"    = "GCF_000006885.1"
+    "Streptococcus_TIGR4"               = "GCF_000006885.1"
 }
 
 
