@@ -1,9 +1,9 @@
 # Lista de genomas: nome_genoma = accession_NCBI
 $genomes = @{
-    "Ecoli_K12"               = "GCF_000005845.2"
-    "Btheta_VPI5482"          = "GCF_000011065.1"
-    "Fprausnitzii_A2165"      = "GCF_902167865.1"
-    "Akkermansia_muciniphila" = "GCF_000020225.1"
+    "Ecoli_K12"                         = "GCF_000005845.2"
+    "Pputida_NBRC14164"                 = "GCF_000412675.1"
+    "Bsubtilis_168"                     = "GCF_000009045.1"   
+    "Streptococcus pneumoniae TIGR4"    = "GCF_000006885.1"
 }
 
 
