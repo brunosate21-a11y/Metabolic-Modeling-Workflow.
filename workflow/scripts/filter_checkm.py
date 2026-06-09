@@ -4,8 +4,8 @@ __license__ = "MIT"
 """
 Quality filter for CheckM results.
 -----------------------------------
-Reads CheckM quality.tsv files (one per MAG), applies completeness
-and contamination thresholds from the workflow config, and produces:
+Reads CheckM quality.tsv files, applies completeness and contamination
+thresholds from the workflow config, and produces:
 
   1. checkm_summary.tsv  — all MAGs with completeness, contamination,
                            and a PASS/FAIL column for downstream review.
@@ -20,7 +20,7 @@ Thresholds are set in config/config.yaml under quality_filters.checkm:
 import csv
 import os
 
-# ── Snakemake interface ──────────────────────────────────────────────
+
 quality_files    = snakemake.input.quality
 summary_out      = snakemake.output.summary
 filtered_out     = snakemake.output.filtered
@@ -32,7 +32,7 @@ max_contamination = float(snakemake.params.max_contamination)
 if isinstance(quality_files, str):
     quality_files = [quality_files]
 
-# ── Main logic ───────────────────────────────────────────────────────
+
 with open(log_file, "w") as logf:
     logf.write(
         f"CheckM quality filter\n"
@@ -42,15 +42,27 @@ with open(log_file, "w") as logf:
     )
 
     rows = []
+    seen_mags = set()  # evita duplicados (quality.tsv tem todos os MAGs)
 
     for path in quality_files:
-        mag = os.path.basename(os.path.dirname(path))
-        logf.write(f"Reading {path} ...\n")
+        path_mag = os.path.basename(os.path.dirname(path))
+        logf.write(f"Reading {path} (target MAG: {path_mag}) ...\n")
 
         try:
             with open(path) as f:
                 reader = csv.DictReader(f, delimiter="\t")
+                matched = False
                 for record in reader:
+                    bin_id = record.get("Bin Id", "").strip()
+
+                    # Apenas a linha cujo Bin Id == nome do MAG deste caminho
+                    if bin_id != path_mag:
+                        continue
+                    if bin_id in seen_mags:
+                        continue
+                    seen_mags.add(bin_id)
+                    matched = True
+
                     completeness  = float(record.get("Completeness", 0))
                     contamination = float(record.get("Contamination", 100))
 
@@ -60,28 +72,37 @@ with open(log_file, "w") as logf:
                     )
 
                     rows.append({
-                        "mag":            mag,
+                        "mag":            bin_id,
                         "completeness":   completeness,
                         "contamination":  contamination,
                         "status":         "PASS" if passed else "FAIL",
                     })
 
                     logf.write(
-                        f"  {mag}: completeness={completeness:.1f}%, "
+                        f"  {bin_id}: completeness={completeness:.1f}%, "
                         f"contamination={contamination:.1f}% "
                         f"-> {'PASS' if passed else 'FAIL'}\n"
                     )
 
+                if not matched:
+                    logf.write(f"  WARNING: no row with Bin Id='{path_mag}' in {path}\n")
+                    rows.append({
+                        "mag":           path_mag,
+                        "completeness":  "NA",
+                        "contamination": "NA",
+                        "status":        "MISSING",
+                    })
+
         except Exception as e:
             logf.write(f"  ERROR reading {path}: {e}\n")
             rows.append({
-                "mag":           mag,
+                "mag":           path_mag,
                 "completeness":  "NA",
                 "contamination": "NA",
                 "status":        "ERROR",
             })
 
-    # ── Write summary TSV ────────────────────────────────────────────
+    # Summary TSV 
     header = ["mag", "completeness", "contamination", "status"]
 
     with open(summary_out, "w") as out:
@@ -89,7 +110,7 @@ with open(log_file, "w") as logf:
         for row in rows:
             out.write("\t".join(str(row[h]) for h in header) + "\n")
 
-    # ── Write filtered MAG list ──────────────────────────────────────
+    #Filtered MAG list 
     passed_mags = [r["mag"] for r in rows if r["status"] == "PASS"]
 
     with open(filtered_out, "w") as out:
