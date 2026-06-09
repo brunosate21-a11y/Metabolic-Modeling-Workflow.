@@ -1,5 +1,19 @@
 configfile: "config/config.yaml"
 
+# --- 1) Deteção automática dos MAGs (TEM de vir antes dos includes) ---
+MAGS_DIR = config.get("mags_dir", "data/mags")
+
+if config.get("MAGS"):
+    MAGS = config["MAGS"]
+else:
+    MAGS, = glob_wildcards(f"{MAGS_DIR}/{{mag}}.faa")
+
+if not MAGS:
+    raise ValueError(
+        f"Nenhum ficheiro .faa encontrado em '{MAGS_DIR}'. "
+        "Coloca os MAGs lá ou define 'MAGS:' no config.yaml."
+    )
+
 include: "rules/checkm.smk"
 include: "rules/carveme.smk"
 include: "rules/memote.smk"
@@ -16,22 +30,6 @@ onsuccess:
 
 onerror:
     print("\n--- An error occurred! ---\n")
-
-
-MAGS_DIR = config.get("mags_dir", "data/mags")
-
-
-if config.get("MAGS"):
-    MAGS = config["MAGS"]
-else:
-    MAGS, = glob_wildcards(f"{MAGS_DIR}/{{mag}}.faa")
-
-
-if not MAGS:
-    raise ValueError(
-        f"Nenhum ficheiro .faa encontrado em '{MAGS_DIR}'. "
-        "Coloca os MAGs lá ou define 'MAGS:' no config.yaml."
-    )
 
 rule all:
     default_target: True
