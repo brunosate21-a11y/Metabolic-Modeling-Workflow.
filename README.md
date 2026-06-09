@@ -20,7 +20,7 @@ A reproducible Snakemake pipeline that reconstructs genome-scale metabolic model
   - **MICOM** — cooperative community FBA
   - **SteadyCom** — steady-state community abundances
 - 📦 **Reproducible** — per-rule Conda environments
-- ⚡ **Solver-agnostic** — works with CPLEX
+- ⚡ **Solver-agnostic** — works with SCIP (default), CPLEX, or Gurobi
 
 ---
 
@@ -185,4 +185,20 @@ To switch, install CPLEX Optimization Studio (free for academia via the [IBM Aca
 This workflow integrates several established open-source tools:
 
 - **[CarveMe](https://github.com/cdanielmachado/carveme)** — GEM reconstruction
--
+- **[Memote](https://github.com/opencobra/memote)** — Model quality assessment
+- **[SMETANA](https://github.com/cdanielmachado/smetana)** — Metabolic interaction analysis
+- **[MICOM](https://github.com/micom-dev/micom)** — Community modeling
+- **[Snakemake](https://snakemake.readthedocs.io/)** — Workflow management
+
+---
+
+## 👤 Author
+
+**Bruno Ferreira**
+**Artur Gomes**
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
