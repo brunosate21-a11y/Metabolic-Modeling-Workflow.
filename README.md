@@ -194,7 +194,7 @@ This workflow integrates several established open-source tools:
 
 ## 👤 Author
 
-**Bruno Ferreira**
+**Bruno Ferreira** ;
 **Artur Gomes**
 
 ---
