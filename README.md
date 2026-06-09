@@ -20,7 +20,7 @@ A reproducible Snakemake pipeline that reconstructs genome-scale metabolic model
   - **MICOM** — cooperative community FBA
   - **SteadyCom** — steady-state community abundances
 - 📦 **Reproducible** — per-rule Conda environments
-- ⚡ **Solver-agnostic** — works with SCIP (default), CPLEX, or Gurobi
+- ⚡ **Solver-agnostic** — works with CPLEX
 
 ---
 
