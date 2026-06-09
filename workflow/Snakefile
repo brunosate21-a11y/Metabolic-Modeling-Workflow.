@@ -44,3 +44,5 @@ rule all:
         "results/smetana/global.tsv",
         "results/smetana/detailed.tsv",
         "results/steadycom/abundances.tsv",
+        "results/checkm/checkm_summary.tsv",
+        "results/checkm/filtered_mags.txt",
