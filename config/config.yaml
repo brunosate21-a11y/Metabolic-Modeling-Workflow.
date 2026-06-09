@@ -1,4 +1,4 @@
-solver: scip
+solver: cplex
 media: M9
 
 quality_filters:
