@@ -11,8 +11,9 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 shell(
     "checkm lineage_wf "
-    "--genes "                           
-    "-x faa "                            
+    "--genes "
+    "-x faa "
+    "--reduced_tree "                   
     "-t {snakemake.threads} "
     "--tab_table "
     "-f {quality} "
