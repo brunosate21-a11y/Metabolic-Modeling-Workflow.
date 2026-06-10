@@ -3,6 +3,8 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
+  - python=3.10
+  - setuptools
   - checkm-genome=1.2.2
 
   
