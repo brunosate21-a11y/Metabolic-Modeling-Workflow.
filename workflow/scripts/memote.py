@@ -1,13 +1,24 @@
 __author__ = "Bruno Ferreira"
 __license__ = "MIT"
 
-from snakemake.shell import shell
+import cobra
+from memote.suite.api import test_model
+from memote.suite.reporting import SnapshotReport, ReportConfiguration
 
-model = snakemake.input.model
-report = snakemake.output.report
-score = snakemake.output.score
+model_file  = snakemake.input.model
+report_file = snakemake.output.report
+score_file  = snakemake.output.score
 
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-shell("memote report snapshot " "--filename {report} " "{model} " "{log}")
-shell("memote run " "--ignore-git " "--filename {score} " "{model} " "{log}")
+model = cobra.io.read_sbml_model(model_file)
+
+_, result = test_model(model, results=True)
+
+config = ReportConfiguration.load()
+report = SnapshotReport(result=result, configuration=config)
+
+with open(report_file, "w", encoding="utf-8") as f:
+    f.write(report.render_html())
+
+with open(score_file, "w", encoding="utf-8") as f:
+    f.write(report.render_json())
