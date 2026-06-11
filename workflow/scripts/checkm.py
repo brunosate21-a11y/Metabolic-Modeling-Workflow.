@@ -1,7 +1,10 @@
 __author__ = "Bruno Ferreira"
 __license__ = "MIT"
 
+import os
 from snakemake.shell import shell
+
+os.environ["CHECKM_DATA_PATH"] = os.path.expanduser("~/checkm_data")
 
 genome = snakemake.input.genome
 output_dir = snakemake.output.output_dir
@@ -13,7 +16,7 @@ shell(
     "checkm lineage_wf "
     "--genes "
     "-x faa "
-    "--reduced_tree "                   
+    "--reduced_tree "
     "-t {snakemake.threads} "
     "--tab_table "
     "-f {quality} "

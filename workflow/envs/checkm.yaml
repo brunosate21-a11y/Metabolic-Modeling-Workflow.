@@ -4,7 +4,6 @@ channels:
   - nodefaults
 dependencies:
   - python=3.10
-  - setuptools
+  - setuptools<81
+  - numpy<2
   - checkm-genome=1.2.2
-
-  
