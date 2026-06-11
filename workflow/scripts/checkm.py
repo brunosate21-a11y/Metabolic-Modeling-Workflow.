@@ -4,7 +4,9 @@ __license__ = "MIT"
 import os
 from snakemake.shell import shell
 
-os.environ["CHECKM_DATA_PATH"] = os.path.expanduser("~/checkm_data")
+os.environ["CHECKM_DATA_PATH"] = os.path.expanduser(
+    snakemake.config["checkm"]["data_path"]
+)
 
 genome = snakemake.input.genome
 output_dir = snakemake.output.output_dir

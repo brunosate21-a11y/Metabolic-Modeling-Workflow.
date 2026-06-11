@@ -7,3 +7,6 @@ quality_filters:
     max_contamination: 10.0
   memote:
     min_total_score: 0.4
+
+checkm:
+  data_path: "~/checkm_data"
