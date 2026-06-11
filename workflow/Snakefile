@@ -1,6 +1,5 @@
 configfile: "config/config.yaml"
 
-# --- 1) Deteção automática dos MAGs (TEM de vir antes dos includes) ---
 MAGS_DIR = config.get("mags_dir", "data/mags")
 
 if config.get("MAGS"):
@@ -20,6 +19,7 @@ include: "rules/memote.smk"
 include: "rules/micom.smk"
 include: "rules/smetana.smk"
 include: "rules/steadycom.smk"
+include: "rules/sensitivity.smk"
 
 onstart:
     print("\n--- Analysis started ---\n")
@@ -46,3 +46,6 @@ rule all:
         "results/steadycom/abundances.tsv",
         "results/checkm/checkm_summary.tsv",
         "results/checkm/filtered_mags.txt",
+        "results/sensitivity/threshold_grid.tsv",
+        "results/sensitivity/mag_robustness.tsv",
+        "results/sensitivity/heatmaps.png",
