@@ -20,6 +20,7 @@ include: "rules/micom.smk"
 include: "rules/smetana.smk"
 include: "rules/steadycom.smk"
 include: "rules/sensitivity.smk"
+include: "rules/comparison.smk"
 
 onstart:
     print("\n--- Analysis started ---\n")
@@ -49,3 +50,6 @@ rule all:
         "results/sensitivity/threshold_grid.tsv",
         "results/sensitivity/mag_robustness.tsv",
         "results/sensitivity/heatmaps.png",
+        "results/comparison/per_species.tsv",
+        "results/comparison/community_summary.tsv",
+        "results/comparison/comparison.png",
