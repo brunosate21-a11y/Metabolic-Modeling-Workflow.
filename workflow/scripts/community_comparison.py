@@ -90,48 +90,68 @@ with open(log_file, "w") as logf:
             return float("nan")
         return merged[[a, b]].corr().iloc[0, 1]
 
-    corr_growth_donor  = corr("growth_steadycom",  "n_donor_smetana")
+    corr_growth_donor   = corr("growth_steadycom",  "n_donor_smetana")
     corr_produce_donate = corr("n_produced_micom", "n_donor_smetana")
     corr_consume_recv   = corr("n_consumed_micom", "n_receiver_smetana")
 
-    logf.write(f"Pearson r(growth_SC, n_donor_SMETANA)        = {corr_growth_donor:.3f}\n")
-    logf.write(f"Pearson r(n_produced_MICOM, n_donor_SMETANA)  = {corr_produce_donate:.3f}\n")
+    logf.write(f"Pearson r(growth_SC, n_donor_SMETANA)           = {corr_growth_donor:.3f}\n")
+    logf.write(f"Pearson r(n_produced_MICOM, n_donor_SMETANA)    = {corr_produce_donate:.3f}\n")
     logf.write(f"Pearson r(n_consumed_MICOM, n_receiver_SMETANA) = {corr_consume_recv:.3f}\n\n")
 
-    fig, axes = plt.subplots(1, 3, figsize=(17, 5.5))
+    # ============================================================
+    #  FIGURA — layout adaptado a comunidades com muitas espécies.
+    # ============================================================
+    def short(name):
+        return str(name).split("_")[-1]
 
-    ax = axes[0]
-    ax.scatter(merged["growth_steadycom"], merged["n_donor_smetana"], s=120, alpha=0.8)
+    merged["label"] = merged["mag"].map(short)
+
+    n = len(merged)
+    bar_width_in = max(10, n * 0.9)
+
+    fig = plt.figure(figsize=(max(16, bar_width_in), 11))
+    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1], hspace=0.32, wspace=0.22)
+
+    ax0 = fig.add_subplot(gs[0, 0])
+    ax0.scatter(merged["growth_steadycom"], merged["n_donor_smetana"], s=130, alpha=0.8)
     for _, r in merged.iterrows():
-        ax.annotate(r["mag"], (r["growth_steadycom"], r["n_donor_smetana"]),
-                    fontsize=8, xytext=(5, 5), textcoords="offset points")
-    ax.set_xlabel("Growth rate (SteadyCom)")
-    ax.set_ylabel("N donated (SMETANA)")
-    ax.set_title(f"SC × SMETANA\nPearson r = {corr_growth_donor:.2f}")
+        ax0.annotate(r["label"], (r["growth_steadycom"], r["n_donor_smetana"]),
+                     fontsize=9, xytext=(5, 5), textcoords="offset points")
+    ax0.set_xlabel("Taxa de crescimento (SteadyCom)")
+    ax0.set_ylabel("Nº metabolitos doados (SMETANA)")
+    ax0.set_title(f"SteadyCom × SMETANA   (r = {corr_growth_donor:.2f})")
 
-    ax = axes[1]
-    ax.scatter(merged["n_produced_micom"], merged["n_donor_smetana"], s=120, alpha=0.8, c="darkorange")
+    ax1 = fig.add_subplot(gs[0, 1])
+    ax1.scatter(merged["n_produced_micom"], merged["n_donor_smetana"],
+                s=130, alpha=0.8, c="darkorange")
     for _, r in merged.iterrows():
-        ax.annotate(r["mag"], (r["n_produced_micom"], r["n_donor_smetana"]),
-                    fontsize=8, xytext=(5, 5), textcoords="offset points")
-    ax.set_xlabel("N produced (MICOM)")
-    ax.set_ylabel("N donated (SMETANA)")
-    ax.set_title(f"MICOM × SMETANA (produção)\nPearson r = {corr_produce_donate:.2f}")
+        ax1.annotate(r["label"], (r["n_produced_micom"], r["n_donor_smetana"]),
+                     fontsize=9, xytext=(5, 5), textcoords="offset points")
+    ax1.set_xlabel("Nº metabolitos produzidos (MICOM)")
+    ax1.set_ylabel("Nº metabolitos doados (SMETANA)")
+    ax1.set_title(f"MICOM × SMETANA   (r = {corr_produce_donate:.2f})")
 
-    ax = axes[2]
-    x = np.arange(len(merged)); w = 0.2
-    ax.bar(x - 1.5*w, merged["n_produced_micom"], w, label="Produced (MICOM)")
-    ax.bar(x - 0.5*w, merged["n_donor_smetana"],  w, label="Donor (SMETANA)")
-    ax.bar(x + 0.5*w, merged["n_consumed_micom"], w, label="Consumed (MICOM)")
-    ax.bar(x + 1.5*w, merged["n_receiver_smetana"], w, label="Receiver (SMETANA)")
-    ax.set_xticks(x)
-    ax.set_xticklabels(merged["mag"], rotation=20, ha="right", fontsize=9)
-    ax.set_ylabel("Contagem")
-    ax.set_title(f"MICOM × SMETANA por espécie\nMIP={sm_com.get('mip')}, MRO={sm_com.get('mro'):.2f}")
-    ax.legend(fontsize=8)
+    ax2 = fig.add_subplot(gs[1, :])
+    x = np.arange(n)
+    w = 0.2
+    ax2.bar(x - 1.5*w, merged["n_produced_micom"],   w, label="Produzidos (MICOM)")
+    ax2.bar(x - 0.5*w, merged["n_donor_smetana"],    w, label="Doados (SMETANA)")
+    ax2.bar(x + 0.5*w, merged["n_consumed_micom"],   w, label="Consumidos (MICOM)")
+    ax2.bar(x + 1.5*w, merged["n_receiver_smetana"], w, label="Recebidos (SMETANA)")
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(merged["label"], rotation=90, fontsize=9)
+    ax2.set_xlabel("Bin (sufixo)")
+    ax2.set_ylabel("Contagem de metabolitos")
+    mro_val = sm_com.get("mro")
+    try:
+        mro_str = f"{float(mro_val):.2f}"
+    except (ValueError, TypeError):
+        mro_str = str(mro_val)
+    ax2.set_title(f"Papéis por espécie — MIP={sm_com.get('mip')}, MRO={mro_str}")
+    ax2.legend(fontsize=9, ncol=4, loc="upper right")
 
-    fig.suptitle(f"Three-method community comparison — {len(merged)} species", y=1.02)
-    plt.tight_layout()
+    fig.suptitle(f"Comparação de três métodos — comunidade de {n} espécies",
+                 y=0.995, fontsize=14)
     plt.savefig(plot_out, dpi=150, bbox_inches="tight")
     plt.close()
 
