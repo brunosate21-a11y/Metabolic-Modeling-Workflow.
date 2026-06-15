@@ -42,7 +42,7 @@ with open(log_file, "w") as logf:
     )
 
     rows = []
-    seen_mags = set()  # evita duplicados (quality.tsv tem todos os MAGs)
+    seen_mags = set()  
 
     for path in quality_files:
         path_mag = os.path.basename(os.path.dirname(path))
@@ -55,7 +55,7 @@ with open(log_file, "w") as logf:
                 for record in reader:
                     bin_id = record.get("Bin Id", "").strip()
 
-                    # Apenas a linha cujo Bin Id == nome do MAG deste caminho
+                    
                     if bin_id != path_mag:
                         continue
                     if bin_id in seen_mags:
@@ -102,7 +102,7 @@ with open(log_file, "w") as logf:
                 "status":        "ERROR",
             })
 
-    # Summary TSV 
+     
     header = ["mag", "completeness", "contamination", "status"]
 
     with open(summary_out, "w") as out:
@@ -110,7 +110,7 @@ with open(log_file, "w") as logf:
         for row in rows:
             out.write("\t".join(str(row[h]) for h in header) + "\n")
 
-    #Filtered MAG list 
+     
     passed_mags = [r["mag"] for r in rows if r["status"] == "PASS"]
 
     with open(filtered_out, "w") as out:

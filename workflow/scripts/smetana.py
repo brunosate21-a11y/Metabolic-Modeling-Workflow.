@@ -24,7 +24,6 @@ log_append_str = log_str.replace(">", ">>", 1) if ">" in log_str else log_str
 
 os.makedirs(os.path.dirname(global_out), exist_ok=True)
 
-# SMETANA usa -o como PREFIXO (adiciona _global.tsv e _detailed.tsv)
 prefix = os.path.join(os.path.dirname(global_out), "smetana").replace("\\", "/")
 
 shell(f"python {smetana_path} {models_str} -g --solver {solver} -o {prefix} {log_str}")

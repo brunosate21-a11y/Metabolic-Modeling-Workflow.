@@ -98,9 +98,7 @@ with open(log_file, "w") as logf:
     logf.write(f"Pearson r(n_produced_MICOM, n_donor_SMETANA)    = {corr_produce_donate:.3f}\n")
     logf.write(f"Pearson r(n_consumed_MICOM, n_receiver_SMETANA) = {corr_consume_recv:.3f}\n\n")
 
-    # ============================================================
-    #  FIGURA — layout adaptado a comunidades com muitas espécies.
-    # ============================================================
+ 
     def short(name):
         return str(name).split("_")[-1]
 

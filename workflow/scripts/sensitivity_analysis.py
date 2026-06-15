@@ -1,16 +1,7 @@
 __author__ = "Bruno Ferreira"
 __license__ = "MIT"
 
-"""
-Sensitivity analysis for quality thresholds.
 
-Reads CheckM and Memote summaries and applies a grid of threshold
-combinations. For each combination, records which MAGs pass quality
-control. Produces:
-  - threshold_grid.tsv:  all combinations with number of MAGs passing
-  - mag_robustness.tsv:  for each MAG, fraction of combinations where it survives
-  - heatmaps.png:        3 panels showing how MAG counts respond to threshold pairs
-"""
 
 from itertools import product
 import pandas as pd
@@ -29,7 +20,6 @@ compl_grid    = list(snakemake.params.checkm_completeness)
 contam_grid   = list(snakemake.params.checkm_contamination)
 memote_grid   = list(snakemake.params.memote_score)
 
-# Baseline thresholds (current config values) — used to fix axes in heatmaps
 baseline_compl   = float(snakemake.config["quality_filters"]["checkm"]["min_completeness"])
 baseline_contam  = float(snakemake.config["quality_filters"]["checkm"]["max_contamination"])
 baseline_memote  = float(snakemake.config["quality_filters"]["memote"]["min_total_score"])

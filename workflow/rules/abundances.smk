@@ -1,9 +1,3 @@
-# ============================================================
-#  Recalcular abundâncias após filtro de qualidade.
-#  Só corre quando há um ficheiro de abundâncias real (dataset
-#  real). No dataset de referência (ABUNDANCES is None) esta
-#  regra não é necessária — MICOM/SteadyCom usam 1/n uniforme.
-# ============================================================
 
 rule recalcular_abundancias:
     input:

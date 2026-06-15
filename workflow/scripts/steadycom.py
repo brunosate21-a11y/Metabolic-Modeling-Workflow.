@@ -10,7 +10,6 @@ abundances_out = snakemake.output.abundances
 model_paths    = [models] if isinstance(models, str) else list(models)
 os.makedirs(os.path.dirname(abundances_out), exist_ok=True)
 
-# --- Abundâncias: ficheiro re-normalizado (real) ou uniforme (refs) ---
 abundances_file = None
 if hasattr(snakemake.input, "abundances"):
     af = snakemake.input.abundances

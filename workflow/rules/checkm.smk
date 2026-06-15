@@ -3,12 +3,7 @@ import os
 CHECKM_DB = os.path.abspath(os.path.expanduser(config["checkm"]["data_path"]))
 
 
-# ============================================================
-#  MODO A (dataset de referência): correr CheckM normalmente.
-#  MODO B (dataset real): CheckM2 já corrido -> dividir o TSV
-#  único em quality.tsv por bin, sem correr CheckM.
-#  A flag USE_CHECKM2 vem do Snakefile.
-# ============================================================
+
 
 if USE_CHECKM2:
 

@@ -11,8 +11,7 @@ exchange_out = snakemake.output.exchange_fluxes
 model_paths  = [models] if isinstance(models, str) else list(models)
 os.makedirs(os.path.dirname(exchange_out), exist_ok=True)
 
-# --- Abundâncias: ficheiro re-normalizado (real) ou uniforme (refs) ---
-# snakemake.input.abundances existe só quando a config tem 'abundances'.
+
 abundances_file = None
 if hasattr(snakemake.input, "abundances"):
     af = snakemake.input.abundances
@@ -25,26 +24,21 @@ def build_taxonomy(model_paths, abundances_file):
 
     if abundances_file and os.path.exists(abundances_file):
         ab = pd.read_csv(abundances_file, sep="\t")
-        # usa a coluna re-normalizada se existir; senão 'abundance'
         col = "abundance_renorm" if "abundance_renorm" in ab.columns else "abundance"
-        # mantém só bins aprovados (abundância > 0)
         ab = ab[ab[col] > 0]
         amap = dict(zip(ab["sample"], ab[col]))
 
-        # filtra os modelos aos que têm abundância aprovada
         keep = [(i, p) for i, p in zip(ids, model_paths) if i in amap]
         if not keep:
             raise ValueError("Nenhum modelo corresponde às abundâncias aprovadas.")
         ids_k  = [i for i, _ in keep]
         path_k = [p for _, p in keep]
         abund  = [amap[i] for i in ids_k]
-        # re-normaliza por segurança (caso algum modelo falte)
         s = sum(abund)
         abund = [a / s for a in abund]
         print(f"Abundâncias REAIS: {len(ids_k)} modelos (de {len(ids)} fornecidos)")
         return pd.DataFrame({"id": ids_k, "file": path_k, "abundance": abund})
 
-    # fallback uniforme
     print(f"Abundâncias UNIFORMES: 1/{len(ids)} para cada modelo")
     return pd.DataFrame({
         "id": ids, "file": model_paths,

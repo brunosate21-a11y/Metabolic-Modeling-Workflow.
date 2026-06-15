@@ -1,27 +1,7 @@
 __author__ = "Bruno Ferreira"
 __license__ = "MIT"
 
-"""
-Recalcular a qualidade das abundâncias após filtro de qualidade.
------------------------------------------------------------------
-As abundâncias de entrada (de mapeamento de reads) somam 1.0 sobre TODOS
-os bins selecionados. Mas o filtro de qualidade (CheckM + Memote) pode
-eliminar alguns bins. A comunidade que efetivamente entra na modelação
-metabólica é só a dos bins APROVADOS — pelo que as abundâncias têm de ser
-re-normalizadas para somar 1.0 apenas sobre esses.
 
-Entradas:
-  - abundances        : TSV (sample, abundance) original, soma 1.0 sobre todos
-  - checkm_filtered   : filtered_mags.txt  (bins que passaram CheckM)
-  - memote_filtered   : filtered_models.txt (bins que passaram Memote)
-
-Saída:
-  - abundances_filtered.tsv : (sample, abundance_raw, abundance_renorm, status)
-    só os bins aprovados em AMBOS os filtros, com abundância re-normalizada.
-
-Nota: a interseção (CheckM ∩ Memote) é a definição conservadora — um bin só
-entra na comunidade final se passar nos dois critérios de qualidade.
-"""
 
 import csv
 import os
@@ -41,7 +21,6 @@ def read_list(path):
 
 
 with open(logf, "w") as log:
-    # Abundâncias originais
     raw = {}
     with open(abund_in) as f:
         reader = csv.DictReader(f, delimiter="\t")
@@ -50,7 +29,7 @@ with open(logf, "w") as log:
 
     checkm_pass = read_list(checkm_in)
     memote_pass = read_list(memote_in)
-    approved = checkm_pass & memote_pass   # interseção: passa nos dois
+    approved = checkm_pass & memote_pass   
 
     log.write("Recálculo de abundâncias pós-filtro\n")
     log.write(f"  bins totais (input):     {len(raw)}\n")
@@ -58,7 +37,6 @@ with open(logf, "w") as log:
     log.write(f"  passaram Memote:         {len(memote_pass)}\n")
     log.write(f"  aprovados (interseção):  {len(approved)}\n\n")
 
-    # Soma das abundâncias dos aprovados (para re-normalizar)
     approved_in_raw = [s for s in raw if s in approved]
     total_approved = sum(raw[s] for s in approved_in_raw)
 
@@ -66,7 +44,6 @@ with open(logf, "w") as log:
         log.write("  ERRO: soma das abundâncias aprovadas = 0\n")
         raise ValueError("Nenhum bin aprovado tem abundância > 0; impossível re-normalizar.")
 
-    # Escrever saída (ordenada por abundância re-normalizada, desc)
     rows = []
     for s in raw:
         status = "APPROVED" if s in approved else "REMOVED"
