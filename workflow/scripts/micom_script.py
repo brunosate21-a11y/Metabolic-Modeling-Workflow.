@@ -21,7 +21,7 @@ print(f"A construir comunidade com {len(model_paths)} modelo(s)...")
 com = Community(taxonomy, solver="glpk")
 
 print("A correr optimize (FBA)...")
-sol = com.optimize()
+sol = com.optimize(fluxes=True)
 
 print("Members:")
 print(sol.members)
