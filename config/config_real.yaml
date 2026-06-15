@@ -1,0 +1,43 @@
+# ============================================================
+#  Config: DATASET REAL (22 MAGs ambientais, amostra EST6)
+#  Correr com:
+#    snakemake --configfile config/config_real.yaml --use-conda --cores 4
+# ============================================================
+
+solver: cplex
+media: M9
+
+# --- Caminhos específicos deste dataset ---
+# Estas chaves sobrepõem os valores por omissão do Snakefile,
+# redirecionando inputs e outputs para não colidir com o dataset de referência.
+mags_dir:    "data/real/proteins"     # onde estão os .faa dos 22 bins
+results_dir: "results/real"           # todos os outputs vão para aqui
+logs_dir:    "logs/real"
+
+# Sample sheet (id + path) — substitui o glob automático.
+sample_sheet: "data/real/samples.tsv"
+
+# --- Metadados pré-computados (fornecidos pelo orientador) ---
+# CheckM2 já corrido: a etapa CheckM é bypassed, lê-se este TSV diretamente.
+checkm_report: "data/real/metadata/checkm_quality.tsv"
+# Abundâncias reais (de mapeamento de reads), já normalizadas para somar 1.0.
+abundances:    "data/real/metadata/abundances.tsv"
+
+quality_filters:
+  checkm:
+    min_completeness: 50.0
+    max_contamination: 15.0      # Artur usou <15% para selecionar os 22 bins
+  memote:
+    min_total_score: 0.4
+
+# checkm.data_path mantém-se por compatibilidade, mas a regra de bypass
+# não o usa (não há download nem execução de CheckM neste dataset).
+checkm:
+  data_path: "~/checkm_data"
+
+sensitivity_analysis:
+  checkm:
+    min_completeness:  [50, 60, 70, 80, 90]
+    max_contamination: [5, 10, 15, 20]
+  memote:
+    min_total_score:   [0.3, 0.4, 0.5, 0.6, 0.7]

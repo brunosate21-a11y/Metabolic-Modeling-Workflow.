@@ -1,17 +1,54 @@
 configfile: "config/config.yaml"
 
-MAGS_DIR = config.get("mags_dir", "data/mags")
+import os
+import csv
 
-if config.get("MAGS"):
+# ============================================================
+#  Variáveis de caminho — lidas da config, com defaults que
+#  reproduzem o comportamento original (dataset de referência).
+#  O dataset real sobrepõe estes valores via config_real.yaml.
+# ============================================================
+MAGS_DIR = config.get("mags_dir", "data/mags")
+RESULTS  = config.get("results_dir", "results")
+LOGS     = config.get("logs_dir", "logs")
+
+# Metadados externos opcionais (None no dataset de referência)
+SAMPLE_SHEET  = config.get("sample_sheet", None)
+CHECKM_REPORT = config.get("checkm_report", None)
+ABUNDANCES    = config.get("abundances", None)
+
+# Flag: se houver um checkm_report pré-computado (CheckM2), a etapa
+# CheckM é bypassed (divide-se o TSV em vez de correr CheckM).
+USE_CHECKM2 = CHECKM_REPORT is not None
+
+# ============================================================
+#  Deteção de MAGs
+#  Prioridade: sample sheet (id+path) > config["MAGS"] > glob.
+# ============================================================
+MAG_PATHS = {}   # id -> path do .faa
+
+if SAMPLE_SHEET:
+    with open(SAMPLE_SHEET) as f:
+        reader = csv.DictReader(f, delimiter="\t")
+        for row in reader:
+            MAG_PATHS[row["id"].strip()] = row["path"].strip()
+    MAGS = list(MAG_PATHS.keys())
+elif config.get("MAGS"):
     MAGS = config["MAGS"]
+    MAG_PATHS = {m: f"{MAGS_DIR}/{m}.faa" for m in MAGS}
 else:
     MAGS, = glob_wildcards(f"{MAGS_DIR}/{{mag}}.faa")
+    MAG_PATHS = {m: f"{MAGS_DIR}/{m}.faa" for m in MAGS}
 
 if not MAGS:
     raise ValueError(
-        f"Nenhum ficheiro .faa encontrado em '{MAGS_DIR}'. "
-        "Coloca os MAGs lá ou define 'MAGS:' no config.yaml."
+        f"Nenhum MAG encontrado. Define 'sample_sheet:' ou 'MAGS:' na config, "
+        f"ou coloca ficheiros .faa em '{MAGS_DIR}'."
     )
+
+def mag_faa(wildcards):
+    """Resolve o caminho do .faa de um MAG a partir da sample sheet."""
+    return MAG_PATHS[wildcards.mag]
 
 include: "rules/checkm.smk"
 include: "rules/carveme.smk"
@@ -19,12 +56,15 @@ include: "rules/memote.smk"
 include: "rules/micom.smk"
 include: "rules/smetana.smk"
 include: "rules/steadycom.smk"
-include: "rules/sensitivity.smk"
+include: "rules/abundances.smk"
 include: "rules/comparison.smk"
 
 onstart:
     print("\n--- Analysis started ---\n")
-    print(f"--- MAGs detected: {len(MAGS)} -> {MAGS} ---\n")
+    print(f"--- Dataset dir: {MAGS_DIR} | Results: {RESULTS} ---")
+    print(f"--- CheckM mode: {'CheckM2 (bypass, via TSV)' if USE_CHECKM2 else 'CheckM (run)'} ---")
+    print(f"--- Abundances: {'real (' + str(ABUNDANCES) + ')' if ABUNDANCES else 'uniform 1/n'} ---")
+    print(f"--- MAGs detected: {len(MAGS)} ---\n")
 
 onsuccess:
     print("\n--- Workflow finished! ---\n")
@@ -35,21 +75,19 @@ onerror:
 rule all:
     default_target: True
     input:
-        expand("results/gems/{mag}.xml", mag=MAGS),
-        expand("results/memote/{mag}/report.html", mag=MAGS),
-        expand("results/memote/{mag}/score.json", mag=MAGS),
-        "results/memote/memote_summary.tsv",
-        "results/memote/memote_quality.tsv",
-        "results/memote/filtered_models.txt",
-        "results/micom/exchange_fluxes.tsv",
-        "results/smetana/global.tsv",
-        "results/smetana/detailed.tsv",
-        "results/steadycom/abundances.tsv",
-        "results/checkm/checkm_summary.tsv",
-        "results/checkm/filtered_mags.txt",
-        "results/sensitivity/threshold_grid.tsv",
-        "results/sensitivity/mag_robustness.tsv",
-        "results/sensitivity/heatmaps.png",
-        "results/comparison/per_species.tsv",
-        "results/comparison/community_summary.tsv",
-        "results/comparison/comparison.png",
+        expand(f"{RESULTS}/gems/{{mag}}.xml", mag=MAGS),
+        expand(f"{RESULTS}/memote/{{mag}}/report.html", mag=MAGS),
+        expand(f"{RESULTS}/memote/{{mag}}/score.json", mag=MAGS),
+        f"{RESULTS}/memote/memote_summary.tsv",
+        f"{RESULTS}/memote/memote_quality.tsv",
+        f"{RESULTS}/memote/filtered_models.txt",
+        f"{RESULTS}/checkm/checkm_summary.tsv",
+        f"{RESULTS}/checkm/filtered_mags.txt",
+        f"{RESULTS}/abundances/abundances_filtered.tsv",
+        f"{RESULTS}/micom/exchange_fluxes.tsv",
+        f"{RESULTS}/smetana/global.tsv",
+        f"{RESULTS}/smetana/detailed.tsv",
+        f"{RESULTS}/steadycom/abundances.tsv",
+        f"{RESULTS}/comparison/per_species.tsv",
+        f"{RESULTS}/comparison/community_summary.tsv",
+        f"{RESULTS}/comparison/comparison.png",

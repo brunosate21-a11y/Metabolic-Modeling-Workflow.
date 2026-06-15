@@ -1,39 +1,37 @@
 rule memote:
     input:
-        model  = "results/gems/{mag}.xml"
+        model  = RESULTS + "/gems/{mag}.xml"
     output:
-        report = "results/memote/{mag}/report.html",
-        score  = "results/memote/{mag}/score.json"
+        report = RESULTS + "/memote/{mag}/report.html",
+        score  = RESULTS + "/memote/{mag}/score.json"
     log:
-        "logs/memote/{mag}.log"
+        LOGS + "/memote/{mag}.log"
     conda:
         "../envs/memote.yaml"
     script:
         "../scripts/memote.py"
 
 
-
-
 rule memote_summary:
     input:
-        scores = expand("results/memote/{mag}/score.json", mag=MAGS)
+        scores = expand(RESULTS + "/memote/{mag}/score.json", mag=MAGS)
     output:
-        summary = "results/memote/memote_summary.tsv"
+        summary = RESULTS + "/memote/memote_summary.tsv"
     log:
-        "logs/memote/memote_summary.log"
+        LOGS + "/memote/memote_summary.log"
     script:
         "../scripts/memote_summary.py"
 
 
 rule filter_memote:
     input:
-        scores = expand("results/memote/{mag}/score.json", mag=MAGS)
+        scores = expand(RESULTS + "/memote/{mag}/score.json", mag=MAGS)
     output:
-        quality  = "results/memote/memote_quality.tsv",
-        filtered = "results/memote/filtered_models.txt"
+        quality  = RESULTS + "/memote/memote_quality.tsv",
+        filtered = RESULTS + "/memote/filtered_models.txt"
     params:
         min_total_score = config["quality_filters"]["memote"]["min_total_score"]
     log:
-        "logs/memote/filter_memote.log"
+        LOGS + "/memote/filter_memote.log"
     script:
         "../scripts/filter_memote.py"

@@ -1,0 +1,37 @@
+# ============================================================
+#  Config: DATASET DE REFERÊNCIA (4 organismos-controlo)
+#  Correr com:
+#    snakemake --configfile config/config_reference.yaml --use-conda --cores 4
+#
+#  Equivalente ao config/config.yaml original — mantido para simetria
+#  com o dataset real. Os caminhos apontam para os valores por omissão.
+# ============================================================
+
+solver: cplex
+media: M9
+
+# --- Caminhos (iguais aos defaults do Snakefile) ---
+mags_dir:    "data/mags"
+results_dir: "results"
+logs_dir:    "logs"
+
+# --- Sem metadados externos: CheckM corre normalmente, abundância uniforme ---
+checkm_report: null     # null -> corre a regra CheckM normal
+abundances:    null     # null -> MICOM/SteadyCom usam 1/n uniforme
+
+quality_filters:
+  checkm:
+    min_completeness: 50.0
+    max_contamination: 10.0
+  memote:
+    min_total_score: 0.4
+
+checkm:
+  data_path: "~/checkm_data"
+
+sensitivity_analysis:
+  checkm:
+    min_completeness:  [50, 60, 70, 80, 90]
+    max_contamination: [5, 10, 15, 20]
+  memote:
+    min_total_score:   [0.3, 0.4, 0.5, 0.6, 0.7]

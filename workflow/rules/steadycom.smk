@@ -1,15 +1,12 @@
-
 rule steadycom:
     input:
-        models     = expand("results/gems/{mag}.xml", mag=MAGS)
+        models     = expand(RESULTS + "/gems/{mag}.xml", mag=MAGS),
+        abundances = (RESULTS + "/abundances/abundances_filtered.tsv") if ABUNDANCES else []
     output:
-        abundances = "results/steadycom/abundances.tsv"
+        abundances = RESULTS + "/steadycom/abundances.tsv"
     log:
-        "logs/steadycom/steadycom.log"
+        LOGS + "/steadycom/steadycom.log"
     conda:
         "../envs/steadycom.yaml"
-
     script:
         "../scripts/steadycom.py"
-
-        
