@@ -75,14 +75,6 @@
   ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM89557]": true,
   ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_reaction_mass_balance": true,
   ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_basic.py::test_find_unique_metabolites": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_stoichiometric_consistency": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_unconserved_metabolites": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_inconsistent_min_stoichiometry": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM3]": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM63]": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM51]": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM121]": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM423]": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM21]": true,
-  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_sbo.py::test_sink_specific_sbo_presence": true
+  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_sbo.py::test_sink_specific_sbo_presence": true,
+  ".snakemake/conda/4b32e637f7d9ea8b468bc7448dc58fe5_/lib/python3.10/site-packages/memote/suite/tests/test_consistency.py::test_detect_energy_generating_cycles[MNXM558]": true
 }
